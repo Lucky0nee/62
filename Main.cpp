@@ -5,23 +5,21 @@ using namespace std;
 class realEstate {
 public:
 	realEstate() {
-		cost = (rand() % 10 + 1) * 10000;
-		address = new string("Empty");
-		name = "Empty";
+		this->cost = (rand() % 10 + 1) * 10000;
+		this->address = new string(AddressCountry[rand() % 4] + "/" + AddressCity[rand() % 4] + "/" + AddressHouse[rand() % 4]); // [rand() % 4]
+		this->name = "Empty"; 
+	}
+
+	realEstate(string name) {
+		this->cost = (rand() % 10 + 1) * 10000;
+		this->address = new string(AddressCountry[rand() % 4] + "/" + AddressCity[rand() % 4] + "/" + AddressHouse[rand() % 4]); // [rand() % 4]
+		this->name = name;
 	}
 
 	realEstate(string name, string address) {
 		cost = (rand() % 100 + 1) * 1000;
 		this->name = name;
 		this->address = new string(address);
-	}
-
-	void setName(string name) {
-		this->name = name;
-	}
-
-	void setCost(double cost) {
-		this->cost = cost;
 	}
 
 	double GetCost() {
@@ -40,6 +38,9 @@ protected:
 	string* address;
 	string name;
 	double cost;
+	vector<string> AddressHouse{ "House #1", "House #2", "House #3", "House #4" };
+	vector<string> AddressCity{ "City #1", "City #2", "City #3", "City #4" };
+	vector<string> AddressCountry{ "Botswana", "Brazil", "Brunei", "Burkina Faso" };
 };
 
 void PrintRealEstates(vector<realEstate*>realEstates) {
@@ -51,14 +52,14 @@ void PrintRealEstates(vector<realEstate*>realEstates) {
 	for (int i = 0; i < static_cast<int>(realEstates.size()); i++) {
 		cout << i + 1 << ". " << realEstates[i]->GetName() << " - " << realEstates[i]->GetCost() << " - " << *(realEstates[i]->GetAddress()) << "\n";
 	}
-	
+
 }
 
 class People {
 public:
 	People() {
 		money = 100000; // 100.000
-		name = "Empty";
+		name = Names[rand() % 4];
 
 		id = g_id; g_id++;
 	}
@@ -97,7 +98,7 @@ public:
 		cout << "Operation successful \n";
 	}
 
-	std::vector<realEstate*> GetRealEstateOfPeople() {
+	vector<realEstate*> GetRealEstateOfPeople() {
 		return this->realEstates;
 	}
 
@@ -115,11 +116,12 @@ public:
 	}
 
 protected:
-	static int g_id;
 	int id;
+	static int g_id;
 	double money;
 	string name;
-	std::vector<realEstate*> realEstates;
+	vector<realEstate*> realEstates;
+	vector<string> Names{ "Sasha", "Ivan", "Anya", "Danya"};
 };
 
 void PrintPeoples(vector<People> Peoples) {
@@ -137,17 +139,16 @@ int main() {
 
 	vector<People> Peoples(3);
 
-	realEstate* something1 = new realEstate("Car", "address #1");		Peoples[rand() % 3].AddRealEstate(something1);
-	realEstate* something2 = new realEstate("House", "address #2");		Peoples[rand() % 3].AddRealEstate(something2);
-	realEstate* something3 = new realEstate("Phone", "address #3");		Peoples[rand() % 3].AddRealEstate(something3);
-	realEstate* something4 = new realEstate("Laptop", "address #4");	Peoples[rand() % 3].AddRealEstate(something4);
-	realEstate* something5 = new realEstate("Pot", "address #5");       Peoples[rand() % 3].AddRealEstate(something5);
-	realEstate* something6 = new realEstate("Painting", "address #6");  Peoples[rand() % 3].AddRealEstate(something6);
+	realEstate* something1 = new realEstate("Car");		Peoples[rand() % 3].AddRealEstate(something1);
+	realEstate* something2 = new realEstate("House");	Peoples[rand() % 3].AddRealEstate(something2);
+	realEstate* something3 = new realEstate("Phone");	Peoples[rand() % 3].AddRealEstate(something3);
+	realEstate* something4 = new realEstate("Laptop");	Peoples[rand() % 3].AddRealEstate(something4);
+	realEstate* something5 = new realEstate("Pot");     Peoples[rand() % 3].AddRealEstate(something5);
+	realEstate* something6 = new realEstate("Painting");Peoples[rand() % 3].AddRealEstate(something6);
 
 	char choice; int p_id = 0, s_id = 0, rE_id = 0;
 
 	while (true) {
-		cout << "\n";
 		cout << "Write 1 to buy something from the user \n";
 		cout << "Write 2 to see all people \n";
 		cout << "-> "; cin >> choice;
@@ -171,6 +172,7 @@ int main() {
 
 	return 0;
 }
+
 /*
 Створити клас об’єктів власності. Кожен об’єкт характеризується вказівником на унікальну адресу об’єкта, назвою, а
 також ціною.
