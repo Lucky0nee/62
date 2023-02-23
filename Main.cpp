@@ -1,15 +1,19 @@
 #include <iostream>
 #include <vector>
-#include <string>
 using namespace std;
-
-int g_id = 1;
 
 class realEstate {
 public:
 	realEstate() {
 		cost = (rand() % 10 + 1) * 10000;
+		address = new string("Empty");
 		name = "Empty";
+	}
+
+	realEstate(string name, string address) {
+		cost = (rand() % 100 + 1) * 1000;
+		this->name = name;
+		this->address = new string(address);
 	}
 
 	void setName(string name) {
@@ -28,39 +32,44 @@ public:
 		return name;
 	}
 
+	string* GetAddress() {
+		return address;
+	}
+
 protected:
-	double cost;
+	string* address;
 	string name;
+	double cost;
 };
 
 void PrintRealEstates(vector<realEstate*>realEstates) {
 	if (realEstates.size() <= 0) {
-		cout << "Nothing...";
+		cout << "Nothing...\n";
 		return;
 	}
 
 	for (int i = 0; i < static_cast<int>(realEstates.size()); i++) {
-		cout << i + 1 << ". " << realEstates[i]->GetName() << " - " << realEstates[i]->GetCost() << "\n";
+		cout << i + 1 << ". " << realEstates[i]->GetName() << " - " << realEstates[i]->GetCost() << " - " << *(realEstates[i]->GetAddress()) << "\n";
 	}
+	
 }
 
 class People {
 public:
 	People() {
 		money = 100000; // 100.000
-		id = g_id;
-		g_id++;
+		name = "Empty";
+
+		id = g_id; g_id++;
 	}
 
 	void DeleteElement(vector<realEstate*>& Vector, int index) {
 		if (Vector.size() <= 0 || Vector.size() == index)
 			return;
 
-		//cout << Vector.size() << " ";
-
 		for (int i = 0; i < static_cast<int>(Vector.size()); i++) {
 			if (i >= index) {
-				Vector[i] = (std::exchange(Vector[i + 1], nullptr));
+				Vector[i] = Vector[i + 1];
 			}
 		}
 
@@ -68,7 +77,7 @@ public:
 		return;
 	}
 
-	void BuySomethingFromSomeOne(People &Seller, People& Buyer, int rE_id) {
+	void BuySomethingFromSomeOne(People& Seller, People& Buyer, int rE_id) {
 		if (rE_id < 0 || rE_id > static_cast<int>(Seller.realEstates.size() - 1) || static_cast<int>(Seller.realEstates.size()) == rE_id) {
 			cout << "error, try again \n";
 			return;
@@ -82,7 +91,7 @@ public:
 		Buyer.money -= Seller.realEstates[rE_id]->GetCost();
 		Seller.money += Seller.realEstates[rE_id]->GetCost();
 
-		Buyer.realEstates.push_back(std::exchange(Seller.realEstates[rE_id], nullptr));
+		Buyer.realEstates.push_back(Seller.realEstates[rE_id]);
 		DeleteElement(Seller.realEstates, rE_id);
 
 		cout << "Operation successful \n";
@@ -98,15 +107,18 @@ public:
 
 	void PrintInfo() {
 		cout << "\nId - " << id;
-		cout << "\nmoney - " << money;
+		cout << "\nMoney - " << money;
+		cout << "\nName - " << name;
 
 		cout << "\nReal Estates: \n";
 		PrintRealEstates(realEstates);
 	}
 
 protected:
+	static int g_id;
 	int id;
 	double money;
+	string name;
 	std::vector<realEstate*> realEstates;
 };
 
@@ -114,47 +126,46 @@ void PrintPeoples(vector<People> Peoples) {
 	for (int i = 0; i < static_cast<int>(Peoples.size()); i++) {
 		cout << i + 1 << ". ";
 		Peoples[i].PrintInfo();
-		cout << "\n\n";
+		cout << "\n";
 	}
 }
+
+int People::g_id = 1;
 
 int main() {
 	srand(static_cast<unsigned>(time(NULL)));
 
-	vector<People> Peoples(5);
-	realEstate* something1 = new realEstate; something1->setName("Car");      Peoples[rand() % 5].AddRealEstate(something1);
-	realEstate* something2 = new realEstate; something2->setName("House");    Peoples[rand() % 5].AddRealEstate(something2);
-	realEstate* something3 = new realEstate; something3->setName("Phone");    Peoples[rand() % 5].AddRealEstate(something3);
-	realEstate* something4 = new realEstate; something4->setName("Laptop");   Peoples[rand() % 5].AddRealEstate(something4);
-	realEstate* something5 = new realEstate; something5->setName("Pot");      Peoples[rand() % 5].AddRealEstate(something5);
-	realEstate* something6 = new realEstate; something6->setName("Painting"); Peoples[rand() % 5].AddRealEstate(something6);
-	
+	vector<People> Peoples(3);
+
+	realEstate* something1 = new realEstate("Car", "address #1");		Peoples[rand() % 3].AddRealEstate(something1);
+	realEstate* something2 = new realEstate("House", "address #2");		Peoples[rand() % 3].AddRealEstate(something2);
+	realEstate* something3 = new realEstate("Phone", "address #3");		Peoples[rand() % 3].AddRealEstate(something3);
+	realEstate* something4 = new realEstate("Laptop", "address #4");	Peoples[rand() % 3].AddRealEstate(something4);
+	realEstate* something5 = new realEstate("Pot", "address #5");       Peoples[rand() % 3].AddRealEstate(something5);
+	realEstate* something6 = new realEstate("Painting", "address #6");  Peoples[rand() % 3].AddRealEstate(something6);
+
+	char choice; int p_id = 0, s_id = 0, rE_id = 0;
+
 	while (true) {
-		string temp; int p_id = 0; int s_id = 0; int rE_id = 0;
-	x:
 		cout << "\n";
 		cout << "Write 1 to buy something from the user \n";
 		cout << "Write 2 to see all people \n";
-		cout << "-> "; cin >> temp;
+		cout << "-> "; cin >> choice;
 
 		system("cls");
 
-		if (temp == "1") {
+		switch (choice) {
+		case '1':
 			cout << "Write id (Buyer): "; cin >> p_id;
 			cout << "Write id (Seller): "; cin >> s_id;
-			
 			cout << "Write id (realEstate): "; cin >> rE_id;
-			if (rE_id - 1 < 0 || rE_id - 1 > static_cast<int>(Peoples[s_id - 1].GetRealEstateOfPeople().size() - 1)) {
-				cout << "error, try again";
-				goto x;
-			}
+
 			Peoples[p_id - 1].BuySomethingFromSomeOne(Peoples[s_id - 1], Peoples[p_id - 1], rE_id - 1);
-			goto x;
-		}
-		else if (temp == "2") {
+			break;
+		case '2':
 			PrintPeoples(Peoples);
-			cout << "\n \n";
-			goto x;
+			cout << "\n";
+			break;
 		}
 	}
 
