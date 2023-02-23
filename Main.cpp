@@ -5,21 +5,21 @@ using namespace std;
 class realEstate {
 public:
 	realEstate() {
-		this->cost = (rand() % 10 + 1) * 10000;
+		this->cost = (rand() % 100 + 1) * 1000;
 		this->address = new string(AddressCountry[rand() % 4] + "/" + AddressCity[rand() % 4] + "/" + AddressHouse[rand() % 4]); // [rand() % 4]
 		this->name = "Empty"; 
 	}
 
 	realEstate(string name) {
-		this->cost = (rand() % 10 + 1) * 10000;
+		this->cost = (rand() % 100 + 1) * 1000;
 		this->address = new string(AddressCountry[rand() % 4] + "/" + AddressCity[rand() % 4] + "/" + AddressHouse[rand() % 4]); // [rand() % 4]
 		this->name = name;
 	}
 
 	realEstate(string name, string address) {
-		cost = (rand() % 100 + 1) * 1000;
-		this->name = name;
+		this->cost = (rand() % 100 + 1) * 1000;
 		this->address = new string(address);
+		this->name = name;
 	}
 
 	double GetCost() {
@@ -38,6 +38,7 @@ protected:
 	string* address;
 	string name;
 	double cost;
+
 	vector<string> AddressHouse{ "House #1", "House #2", "House #3", "House #4" };
 	vector<string> AddressCity{ "City #1", "City #2", "City #3", "City #4" };
 	vector<string> AddressCountry{ "Botswana", "Brazil", "Brunei", "Burkina Faso" };
@@ -58,10 +59,10 @@ void PrintRealEstates(vector<realEstate*>realEstates) {
 class People {
 public:
 	People() {
-		money = 100000; // 100.000
-		name = Names[rand() % 4];
+		this->money = (rand() % 100 + 1) * 3000;
+		this->name = Names[rand() % 4] + " / " + LastNames[rand() % 4];
 
-		id = g_id; g_id++;
+		this->id = g_id; g_id++;
 	}
 
 	void DeleteElement(vector<realEstate*>& Vector, int index) {
@@ -79,7 +80,7 @@ public:
 	}
 
 	void BuySomethingFromSomeOne(People& Seller, People& Buyer, int rE_id) {
-		if (rE_id < 0 || rE_id > static_cast<int>(Seller.realEstates.size() - 1) || static_cast<int>(Seller.realEstates.size()) == rE_id) {
+		if (rE_id < 0 || rE_id > static_cast<int>(Seller.realEstates.size() - 1)) {
 			cout << "error, try again \n";
 			return;
 		}
@@ -122,6 +123,7 @@ protected:
 	string name;
 	vector<realEstate*> realEstates;
 	vector<string> Names{ "Sasha", "Ivan", "Anya", "Danya"};
+	vector<string> LastNames{ "Barash", "Tarkhanov", "Kobelev", "Saburov" };
 };
 
 void PrintPeoples(vector<People> Peoples) {
@@ -166,6 +168,9 @@ int main() {
 		case '2':
 			PrintPeoples(Peoples);
 			cout << "\n";
+			break;
+		
+		default:
 			break;
 		}
 	}
